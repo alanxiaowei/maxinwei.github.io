@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="-- 麻欣伟 -- maxinwei -- alanxiaowei@hotmail.com -- alanma">
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        RocketMQ搭建2M-2S集群 - Alan Ma&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> hide one&#39;s capacities and bide one&#39;s time </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/avatar.jpg">
+        </div>
+        <div class="name">
+            <i>Alan Ma</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li>
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>HOME</span>
+                </a>
+            </li>
+            <li>
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>TAGS</span>
+                </a>
+            </li>
+            <li>
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>ARCHIVES</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>ABOUT</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>SEARCH</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#概述"><span class="toc-text">概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#架构图"><span class="toc-text">架构图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基本概念"><span class="toc-text">基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#集群模式"><span class="toc-text">集群模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1M1S"><span class="toc-text">1M1S</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2M"><span class="toc-text">2M</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2M2S"><span class="toc-text">2M2S</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置安装"><span class="toc-text">配置安装</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#设备信息"><span class="toc-text">设备信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#下载MQ"><span class="toc-text">下载MQ</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#修改内存"><span class="toc-text">修改内存</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#配置Nameserver"><span class="toc-text">配置Nameserver</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#启动Nameserver"><span class="toc-text">启动Nameserver</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#关闭Nameserver"><span class="toc-text">关闭Nameserver</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#配置Broker"><span class="toc-text">配置Broker</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#编辑conf文件"><span class="toc-text">编辑conf文件</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#Broker-Master-01"><span class="toc-text">Broker-Master-01</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#Broker-Slave-01"><span class="toc-text">Broker-Slave-01</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#Broker-Master-02"><span class="toc-text">Broker-Master-02</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#Broker-Slave-02"><span class="toc-text">Broker-Slave-02</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#启动broker"><span class="toc-text">启动broker</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#关闭broker"><span class="toc-text">关闭broker</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#测试"><span class="toc-text">测试</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Producer"><span class="toc-text">Producer</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Consumer"><span class="toc-text">Consumer</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#控制台"><span class="toc-text">控制台</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#下载"><span class="toc-text">下载</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#配置启动"><span class="toc-text">配置启动</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#集群信息"><span class="toc-text">集群信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#创建Topic"><span class="toc-text">创建Topic</span></a></li></ol></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">search</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> hide one&#39;s capacities and bide one&#39;s time </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        RocketMQ搭建2M-2S集群
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">Post：<span>2019-06-09 17:40:04</span></span>
+        
+        <span class="attr">Tags：/
+        
+        <a class="tag" href="/tags/#RocketMQ" title="RocketMQ">RocketMQ</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+</span>
+
+    </div>
+    <div class="post-content ">
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>​        RocketMQ早期为阿里巴巴消息队列开源项目，后被捐赠给apache并成为其顶级开源项目被应用到很多互联网公司系统中。消息队列本质上是一种”先进先出”的数据结构，RocketMQ具有应用解耦、流量消峰、消息分发、保证最终一致性，方便动态扩容等特性。另外RocketMQ使用Java语言开发，这也降低了分析源码的门槛，方便大家更深入的排查定位问题和二次定制开发。</p>
+<h3 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h3><img src="RocketMQ-001.png" height="auto" width="780">
+
+<p>​        RocketMQ基于长轮序的拉取方式，这样便解决了事物消息、顺序消息和海量堆积等问题，消息队列的push和pull机制会在后续原理篇中详细说明。长连接每隔30s发送一次心跳包，如果长时间未收到心跳包Nameserver会踢掉Broker，即关闭与Broker的连接。</p>
+<h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><ul>
+<li><p>Nameserver——Nameserver是整个消息队列中的状态服务器，集群的各个组件通过其了解彼此信息。        </p>
+</li>
+<li><p>Broker——消息中转角色，负责存储消息，转发消息。</p>
+</li>
+<li><p>Topic——消息队列分类，用来区分不同类型的消息。</p>
+</li>
+<li><p>Tag——消息队列子分类，用来区分相同Topic下的不同信息。</p>
+</li>
+<li><p>Queue——Topic对应的消息队列数，如消息需要全局顺序，则topic的queue必须设置为1。</p>
+</li>
+</ul>
+<h3 id="集群模式"><a href="#集群模式" class="headerlink" title="集群模式"></a>集群模式</h3><h4 id="1M1S"><a href="#1M1S" class="headerlink" title="1M1S"></a>1M1S</h4><p>优点: Broker-Master宕机，Broker-Slave可以同步Broker-Master未被消费的消息，供消费者消费，不中断后续业务流程。</p>
+<p>缺点:Broker- Master宕机后，生产者无法在Broker-Slave生产消息，即”只能读消息，不能写消息”。</p>
+<h4 id="2M"><a href="#2M" class="headerlink" title="2M"></a>2M</h4><p>优点: 一台Broker-Master-01宕机，不影响另一台，Nameserver会在30秒内，踢掉宕机Broker-Master-01，从而保证新连接的client都访问到正常Broker-Master-02。</p>
+<p>缺点: 宕机Broker-Master-01中未被消费的消息无法同步。</p>
+<h4 id="2M2S"><a href="#2M2S" class="headerlink" title="2M2S"></a>2M2S</h4><p>可以兼顾”1M1S”和”2M”模式的优点，宕机Broker-Master-01的消息同步后继续被消费，又可以向另一个存活的Broker-Master-02中生产新的消息。</p>
+<h3 id="配置安装"><a href="#配置安装" class="headerlink" title="配置安装"></a>配置安装</h3><h4 id="设备信息"><a href="#设备信息" class="headerlink" title="设备信息"></a>设备信息</h4><p>​        可以使用4台机器分别启动Namserver01和Broker-Master-01、Namserver02和Broker-Master-02、Broker-Slave-01、Broker-Slave-02，因为Nameserver压力比较小，测试只需两台构成最小集群即可。</p>
+<p>​        笔者在个人mac上编写此篇博文，为了简单表明原理，通过不同端口来代表不同虚机，由于需要测试不同IP的Nameserver集群，故使用一台虚机。</p>
+<style>
+table th:first-of-type {
+    width: 360px;
+}
+table th:nth-of-type(2){
+    width: 360px;
+}
+</style>
+
+<table>
+<thead>
+<tr>
+<th align="center">名称</th>
+<th align="center">IP:Port</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Namserver01</td>
+<td align="center">192.168.2.168:9876</td>
+</tr>
+<tr>
+<td align="center">Broker-Master-01</td>
+<td align="center">192.168.2.168:10911</td>
+</tr>
+<tr>
+<td align="center">Broker-Slave-01</td>
+<td align="center">192.168.2.168:11012</td>
+</tr>
+<tr>
+<td align="center">Namserver02</td>
+<td align="center">192.168.2.183:9876</td>
+</tr>
+<tr>
+<td align="center">Broker-Master-02</td>
+<td align="center">192.168.2.168:12013</td>
+</tr>
+<tr>
+<td align="center">Broker-Slave-02</td>
+<td align="center">192.168.2.168:13014</td>
+</tr>
+</tbody></table>
+<h4 id="下载MQ"><a href="#下载MQ" class="headerlink" title="下载MQ"></a>下载MQ</h4><p><a href="http://rocketmq.apache.org/dowloading/releases/" target="_blank" rel="noopener">http://rocketmq.apache.org/dowloading/releases/</a></p>
+<p>本文选择目前公司生产版本4.2.0 release</p>
+<ul>
+<li>解压</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">unzip rocketmq-all-4.2.0-bin-release.zip -d ./rocketmq-all-4.2.0-bin-release</span><br><span class="line">cd rocketmq-all-4.2.0-bin-release/</span><br></pre></td></tr></table></figure>
+
+<h4 id="修改内存"><a href="#修改内存" class="headerlink" title="修改内存"></a>修改内存</h4><p>RocketMQ默认运行需要占用4G内存，在测试环境可以根据实际需要修改内存大小，否则会出现内存不足无法启动Broker的问题。</p>
+<p><strong>bin/runserver.sh</strong></p>
+<p>修改前</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JAVA_OPT="$&#123;JAVA_OPT&#125; -server -Xms4g -Xmx4g -Xmn2g -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=320m"</span><br></pre></td></tr></table></figure>
+
+<p>修改后</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JAVA_OPT="$&#123;JAVA_OPT&#125; -server -Xms256m -Xmx256m -Xmn128m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=320m"</span><br></pre></td></tr></table></figure>
+
+<p><strong>bin/runbroker.sh</strong></p>
+<p>修改前</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JAVA_OPT="$&#123;JAVA_OPT&#125; -server -Xms8g -Xmx8g -Xmn4g"</span><br></pre></td></tr></table></figure>
+
+<p>修改后</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JAVA_OPT="$&#123;JAVA_OPT&#125; -server -Xms256m -Xmx256m -Xmn128m"</span><br></pre></td></tr></table></figure>
+
+<p><strong>bin/mqnamesrv.xml、bin/mqbroker.xml</strong></p>
+<p>修改前</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">options</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">-Xms512m</span>&gt;</span><span class="tag">&lt;/<span class="name">-Xms512m</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">-Xmx1g</span>&gt;</span><span class="tag">&lt;/<span class="name">-Xmx1g</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">-XX:NewSize</span>&gt;</span>256M<span class="tag">&lt;/<span class="name">-XX:NewSize</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">-XX:MaxNewSize</span>&gt;</span>512M<span class="tag">&lt;/<span class="name">-XX:MaxNewSize</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">-XX:PermSize</span>&gt;</span>128M<span class="tag">&lt;/<span class="name">-XX:PermSize</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">-XX:MaxPermSize</span>&gt;</span>128M<span class="tag">&lt;/<span class="name">-XX:MaxPermSize</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">options</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>修改后</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">options</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">-Xms256m</span>&gt;</span><span class="tag">&lt;/<span class="name">-Xms256m</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">-Xmx512m</span>&gt;</span><span class="tag">&lt;/<span class="name">-Xmx512m</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">-XX:NewSize</span>&gt;</span>128M<span class="tag">&lt;/<span class="name">-XX:NewSize</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">-XX:MaxNewSize</span>&gt;</span>256M<span class="tag">&lt;/<span class="name">-XX:MaxNewSize</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">-XX:PermSize</span>&gt;</span>128M<span class="tag">&lt;/<span class="name">-XX:PermSize</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">-XX:MaxPermSize</span>&gt;</span>128M<span class="tag">&lt;/<span class="name">-XX:MaxPermSize</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">options</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="配置Nameserver"><a href="#配置Nameserver" class="headerlink" title="配置Nameserver"></a>配置Nameserver</h4><p>分别启动Namserver01和Namserver02</p>
+<h5 id="启动Nameserver"><a href="#启动Nameserver" class="headerlink" title="启动Nameserver"></a>启动Nameserver</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup sh bin/mqnamesrv &amp;</span><br></pre></td></tr></table></figure>
+
+<p>启动成功提示</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">The Name Server boot success. serializeType=JSON</span><br></pre></td></tr></table></figure>
+
+<p>建议用supervisor管理进程，在后续博文中会详细介绍，本文先以nohup作为启动。</p>
+<h5 id="关闭Nameserver"><a href="#关闭Nameserver" class="headerlink" title="关闭Nameserver"></a>关闭Nameserver</h5><p>要先关闭Broker再关闭Nameserver</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh bin/mqshutdown namesrv</span><br></pre></td></tr></table></figure>
+
+<p>关闭成功提示</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">The mqnamesrv(2418) is running...</span><br><span class="line">Send shutdown request to mqnamesrv(2418) OK</span><br></pre></td></tr></table></figure>
+
+<h4 id="配置Broker"><a href="#配置Broker" class="headerlink" title="配置Broker"></a>配置Broker</h4><h5 id="编辑conf文件"><a href="#编辑conf文件" class="headerlink" title="编辑conf文件"></a>编辑conf文件</h5><p>/rocketmq/conf/XXX.conf</p>
+<p>可参考conf下配置文件示例：2m-2s-async/、2m-2s-sync/、2m-noslave</p>
+<h6 id="Broker-Master-01"><a href="#Broker-Master-01" class="headerlink" title="Broker-Master-01"></a>Broker-Master-01</h6><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#namse server地址使用“;”</span></span><br><span class="line"><span class="string">namesrvAddr=127.0.0.1:9876;192.168.2.183:9876</span></span><br><span class="line"><span class="comment">#集群名称</span></span><br><span class="line"><span class="string">brokerClusterName=DefaultCluster</span></span><br><span class="line"><span class="comment">#master与slave的brokerName必须一致</span></span><br><span class="line"><span class="string">brokerName=broker-01</span></span><br><span class="line"><span class="comment">#0为master，大于0的brokerId为不同的slave</span></span><br><span class="line"><span class="string">brokerId=0</span></span><br><span class="line"><span class="comment">#在何时做过期消息删除默认凌晨4点</span></span><br><span class="line"><span class="string">deleteWhen=04</span></span><br><span class="line"><span class="comment">#在磁盘上保存消息的时间单位：小时</span></span><br><span class="line"><span class="string">fileReservedTime=48</span></span><br><span class="line"><span class="comment">#SYNC_MASTER, ASYNC_MASTER, SLAVE</span></span><br><span class="line"><span class="string">brokerRole=SYNC_MASTER</span></span><br><span class="line"><span class="comment">#刷盘策略SYNC_FLUSH, ASYNC_FLUSH</span></span><br><span class="line"><span class="string">flushDiskType=ASYNC_FLUSH</span></span><br><span class="line"><span class="comment">#Broker监听端口</span></span><br><span class="line"><span class="string">listenPort=10911</span></span><br><span class="line"><span class="comment">#存储消息目录</span></span><br><span class="line"><span class="string">storePathRootDir=/Users/alanma/store-master-01</span></span><br></pre></td></tr></table></figure>
+
+<h6 id="Broker-Slave-01"><a href="#Broker-Slave-01" class="headerlink" title="Broker-Slave-01"></a>Broker-Slave-01</h6><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#namse server地址使用“;”</span></span><br><span class="line"><span class="string">namesrvAddr=127.0.0.1:9876;192.168.2.183:9876</span></span><br><span class="line"><span class="comment">#集群名称</span></span><br><span class="line"><span class="string">brokerClusterName=DefaultCluster</span></span><br><span class="line"><span class="comment">#master与slave的brokerName必须一致</span></span><br><span class="line"><span class="string">brokerName=broker-01</span></span><br><span class="line"><span class="comment">#0为master，大于0的brokerId为不同的slave</span></span><br><span class="line"><span class="string">brokerId=1</span></span><br><span class="line"><span class="comment">#在何时做过期消息删除默认凌晨4点</span></span><br><span class="line"><span class="string">deleteWhen=04</span></span><br><span class="line"><span class="comment">#在磁盘上保存消息的时间单位：小时</span></span><br><span class="line"><span class="string">fileReservedTime=48</span></span><br><span class="line"><span class="comment">#SYNC_MASTER, ASYNC_MASTER, SLAVE</span></span><br><span class="line"><span class="string">brokerRole=SLAVE</span></span><br><span class="line"><span class="comment">#刷盘策略SYNC_FLUSH, ASYNC_FLUSH</span></span><br><span class="line"><span class="string">flushDiskType=ASYNC_FLUSH</span></span><br><span class="line"><span class="comment">#Broker监听端口</span></span><br><span class="line"><span class="string">listenPort=10912</span></span><br><span class="line"><span class="comment">#存储消息目录</span></span><br><span class="line"><span class="string">storePathRootDir=/Users/alanma/store-slave-01</span></span><br></pre></td></tr></table></figure>
+
+<h6 id="Broker-Master-02"><a href="#Broker-Master-02" class="headerlink" title="Broker-Master-02"></a>Broker-Master-02</h6><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#namse server地址使用“;”</span></span><br><span class="line"><span class="string">namesrvAddr=127.0.0.1:9876;192.168.2.183:9876</span></span><br><span class="line"><span class="comment">#集群名称</span></span><br><span class="line"><span class="string">brokerClusterName=DefaultCluster</span></span><br><span class="line"><span class="comment">#master与slave的brokerName必须一致</span></span><br><span class="line"><span class="string">brokerName=broker-02</span></span><br><span class="line"><span class="comment">#0为master，大于0的brokerId为不同的slave</span></span><br><span class="line"><span class="string">brokerId=0</span></span><br><span class="line"><span class="comment">#在何时做过期消息删除默认凌晨4点</span></span><br><span class="line"><span class="string">deleteWhen=04</span></span><br><span class="line"><span class="comment">#在磁盘上保存消息的时间单位：小时</span></span><br><span class="line"><span class="string">fileReservedTime=48</span></span><br><span class="line"><span class="comment">#SYNC_MASTER, ASYNC_MASTER, SLAVE</span></span><br><span class="line"><span class="string">brokerRole=SYNC_MASTER</span></span><br><span class="line"><span class="comment">#刷盘策略SYNC_FLUSH, ASYNC_FLUSH</span></span><br><span class="line"><span class="string">flushDiskType=ASYNC_FLUSH</span></span><br><span class="line"><span class="comment">#Broker监听端口</span></span><br><span class="line"><span class="string">listenPort=10913</span></span><br><span class="line"><span class="comment">#存储消息目录</span></span><br><span class="line"><span class="string">storePathRootDir=/Users/alanma/store-master-02</span></span><br></pre></td></tr></table></figure>
+
+<h6 id="Broker-Slave-02"><a href="#Broker-Slave-02" class="headerlink" title="Broker-Slave-02"></a>Broker-Slave-02</h6><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#namse server地址使用“;”</span></span><br><span class="line"><span class="string">namesrvAddr=127.0.0.1:9876;192.168.2.183:9876</span></span><br><span class="line"><span class="comment">#集群名称</span></span><br><span class="line"><span class="string">brokerClusterName=DefaultCluster</span></span><br><span class="line"><span class="comment">#master与slave的brokerName必须一致</span></span><br><span class="line"><span class="string">brokerName=broker-02</span></span><br><span class="line"><span class="comment">#0为master，大于0的brokerId为不同的slave</span></span><br><span class="line"><span class="string">brokerId=1</span></span><br><span class="line"><span class="comment">#在何时做过期消息删除默认凌晨4点</span></span><br><span class="line"><span class="string">deleteWhen=04</span></span><br><span class="line"><span class="comment">#在磁盘上保存消息的时间单位：小时</span></span><br><span class="line"><span class="string">fileReservedTime=48</span></span><br><span class="line"><span class="comment">#SYNC_MASTER, ASYNC_MASTER, SLAVE</span></span><br><span class="line"><span class="string">brokerRole=SLAVE</span></span><br><span class="line"><span class="comment">#刷盘策略SYNC_FLUSH, ASYNC_FLUSH</span></span><br><span class="line"><span class="string">flushDiskType=ASYNC_FLUSH</span></span><br><span class="line"><span class="comment">#Broker监听端口</span></span><br><span class="line"><span class="string">listenPort=10914</span></span><br><span class="line"><span class="comment">#存储消息目录</span></span><br><span class="line"><span class="string">storePathRootDir=/Users/alanma/store-slave-02</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="启动broker"><a href="#启动broker" class="headerlink" title="启动broker"></a>启动broker</h5><p>./conf/broker-master.conf为配置文件名可以自定义</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nohup sh ./bin/mqbroker -c ./conf/broker-master.conf &amp;</span><br><span class="line"></span><br><span class="line">nohup sh ./bin/mqbroker -c ./conf/broker-slave.conf &amp;</span><br></pre></td></tr></table></figure>
+
+<p>启动成功提示</p>
+<p><strong>查看日志</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tail -f ~/logs/rocketmqlogs/broker.log</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">INFO PullRequestHoldService - PullRequestHoldService service started</span><br><span class="line">INFO main - register broker to name server 127.0.0.1:9876 OK</span><br><span class="line">INFO main - register broker to name server 192.168.2.183:9876 OK</span><br><span class="line">INFO main - The broker[broker-01, 192.168.2.134:10911] boot success. serializeType=JSON and name server is 127.0.0.1:9876;192.168.2.183:9876</span><br><span class="line">INFO BrokerControllerScheduledThread1 - dispatch behind commit log 0 bytes</span><br><span class="line">INFO BrokerControllerScheduledThread1 - Slave fall behind master: 745 bytes</span><br><span class="line">INFO BrokerControllerScheduledThread1 - register broker to name server 127.0.0.1:9876 OK</span><br><span class="line">INFO BrokerControllerScheduledThread1 - register broker to name server 192.168.2.183:9876 OK</span><br><span class="line">INFO BrokerControllerScheduledThread1 - register broker to name server 127.0.0.1:9876 OK</span><br><span class="line">INFO BrokerControllerScheduledThread1 - register broker to name server 192.168.2.183:9876 OK</span><br><span class="line">INFO BrokerControllerScheduledThread1 - dispatch behind commit log 0 bytes</span><br><span class="line">INFO BrokerControllerScheduledThread1 - Slave fall behind master: 745 bytes</span><br><span class="line">INFO BrokerControllerScheduledThread1 - register broker to name server 127.0.0.1:9876 OK</span><br><span class="line">INFO BrokerControllerScheduledThread1 - register broker to name server 192.168.2.183:9876 OK</span><br></pre></td></tr></table></figure>
+
+<h5 id="关闭broker"><a href="#关闭broker" class="headerlink" title="关闭broker"></a>关闭broker</h5><p>要先关闭Broker再关闭Nameserver</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh bin/mqshutdown broker</span><br></pre></td></tr></table></figure>
+
+<h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><h5 id="Producer"><a href="#Producer" class="headerlink" title="Producer"></a>Producer</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.mxw.doraemon.rocketmq;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.rocketmq.client.exception.MQClientException;</span><br><span class="line"><span class="keyword">import</span> org.apache.rocketmq.client.producer.DefaultMQProducer;</span><br><span class="line"><span class="keyword">import</span> org.apache.rocketmq.client.producer.SendResult;</span><br><span class="line"><span class="keyword">import</span> org.apache.rocketmq.common.message.Message;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Producer</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> MQClientException, InterruptedException </span>&#123;</span><br><span class="line"></span><br><span class="line">		DefaultMQProducer producer = <span class="keyword">new</span> DefaultMQProducer(<span class="string">"ProducerGroupNameTest"</span>);</span><br><span class="line">		producer.setNamesrvAddr(<span class="string">"127.0.0.1:9876;192.168.2.183:9876"</span>);</span><br><span class="line">		producer.setInstanceName(<span class="string">"ProducerTest"</span>);</span><br><span class="line">		producer.setVipChannelEnabled(<span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">		producer.start();</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1</span>; i++) &#123;</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				&#123;</span><br><span class="line">					Message msg = <span class="keyword">new</span> Message(<span class="string">"q_test"</span>, <span class="comment">// topic</span></span><br><span class="line">							<span class="string">"TagA"</span>, <span class="comment">// tag</span></span><br><span class="line">							<span class="string">"OrderID001"</span>, <span class="comment">// key</span></span><br><span class="line">							(<span class="string">"Hello MetaQ TagA"</span>).getBytes());<span class="comment">// body</span></span><br><span class="line">					SendResult sendResult = producer.send(msg);</span><br><span class="line">					System.out.println(sendResult);</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">				&#123;</span><br><span class="line">					Message msg = <span class="keyword">new</span> Message(<span class="string">"q_test"</span>, <span class="comment">// topic</span></span><br><span class="line">							<span class="string">"TagB"</span>, <span class="comment">// tag</span></span><br><span class="line">							<span class="string">"OrderID0034"</span>, <span class="comment">// key</span></span><br><span class="line">							(<span class="string">"Hello MetaQ TagB"</span>).getBytes());<span class="comment">// body</span></span><br><span class="line">					SendResult sendResult = producer.send(msg);</span><br><span class="line">					System.out.println(sendResult);</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">				&#123;</span><br><span class="line">					Message msg = <span class="keyword">new</span> Message(<span class="string">"q_test"</span>, <span class="comment">// topic</span></span><br><span class="line">							<span class="string">"TagC"</span>, <span class="comment">// tag</span></span><br><span class="line">							<span class="string">"OrderID061"</span>, <span class="comment">// key</span></span><br><span class="line">							(<span class="string">"Hello MetaQ TagC"</span>).getBytes());<span class="comment">// body</span></span><br><span class="line">					SendResult sendResult = producer.send(msg);</span><br><span class="line">					System.out.println(sendResult);</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">				&#123;</span><br><span class="line">					Message msg = <span class="keyword">new</span> Message(<span class="string">"q_all_test"</span>, (<span class="string">"Hello MetaQ All~~~"</span>).getBytes());</span><br><span class="line">					SendResult sendResult = producer.send(msg);</span><br><span class="line">					System.out.println(sendResult);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">			TimeUnit.MILLISECONDS.sleep(<span class="number">1000</span>);</span><br><span class="line">		&#125;</span><br><span class="line">    </span><br><span class="line">		producer.shutdown();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>运行结果</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SendResult [sendStatus=SEND_OK, msgId=C0A8028645EC135FBAA431C4CDD40000, offsetMsgId=C0A8028600002EED00000000000002E9, messageQueue=MessageQueue [topic=q_test, brokerName=broker-<span class="number">02</span>, queueId=<span class="number">0</span>], queueOffset=<span class="number">0</span>]</span><br><span class="line">SendResult [sendStatus=SEND_OK, msgId=C0A8028645EC135FBAA431C4CDE50001, offsetMsgId=C0A8028600002EED00000000000003A8, messageQueue=MessageQueue [topic=q_test, brokerName=broker-<span class="number">02</span>, queueId=<span class="number">1</span>], queueOffset=<span class="number">0</span>]</span><br><span class="line">SendResult [sendStatus=SEND_OK, msgId=C0A8028645EC135FBAA431C4CDE70002, offsetMsgId=C0A8028600002EED0000000000000468, messageQueue=MessageQueue [topic=q_test, brokerName=broker-<span class="number">02</span>, queueId=<span class="number">2</span>], queueOffset=<span class="number">0</span>]</span><br><span class="line">SendResult [sendStatus=SEND_OK, msgId=C0A8028645EC135FBAA431C4CDEC0003, offsetMsgId=C0A8028600002EED0000000000000527, messageQueue=MessageQueue [topic=q_all_test, brokerName=broker-<span class="number">02</span>, queueId=<span class="number">1</span>], queueOffset=<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+
+<h5 id="Consumer"><a href="#Consumer" class="headerlink" title="Consumer"></a>Consumer</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.mxw.doraemon.rocketmq;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;</span><br><span class="line"><span class="keyword">import</span> org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;</span><br><span class="line"><span class="keyword">import</span> org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;</span><br><span class="line"><span class="keyword">import</span> org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;</span><br><span class="line"><span class="keyword">import</span> org.apache.rocketmq.common.message.MessageExt;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PushConsumer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line"></span><br><span class="line">			DefaultMQPushConsumer consumer = <span class="keyword">new</span> DefaultMQPushConsumer(<span class="string">"ConsumerGroupNameMXWLocalHost"</span>);</span><br><span class="line">			consumer.setNamesrvAddr(<span class="string">"127.0.0.1:9876;192.168.2.183:9876"</span>);</span><br><span class="line">			consumer.setInstanceName(<span class="string">"ConsumberMXW"</span>);</span><br><span class="line">			consumer.setVipChannelEnabled(<span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">			<span class="comment">/**</span></span><br><span class="line"><span class="comment">			 * 订阅指定topic下tags分别等于TagA或TagC或TagD</span></span><br><span class="line"><span class="comment">			 */</span></span><br><span class="line">			consumer.subscribe(<span class="string">"q_test"</span>, <span class="string">"TagA || TagC || TagD"</span>);</span><br><span class="line"></span><br><span class="line">			consumer.subscribe(<span class="string">"q_all_test"</span>, <span class="string">"*"</span>);</span><br><span class="line"></span><br><span class="line">			consumer.registerMessageListener(<span class="keyword">new</span> MessageListenerConcurrently() &#123;</span><br><span class="line"></span><br><span class="line">				<span class="meta">@Override</span></span><br><span class="line">				<span class="function"><span class="keyword">public</span> ConsumeConcurrentlyStatus <span class="title">consumeMessage</span><span class="params">(List&lt;MessageExt&gt; msgs,</span></span></span><br><span class="line"><span class="function"><span class="params">						ConsumeConcurrentlyContext context)</span> </span>&#123;</span><br><span class="line">					System.out.println(Thread.currentThread().getName() + <span class="string">" Receive New Messages: "</span> + msgs.size());</span><br><span class="line"></span><br><span class="line">					MessageExt msg = msgs.get(<span class="number">0</span>);</span><br><span class="line">					<span class="keyword">if</span> (msg.getTopic().equals(<span class="string">"q_test"</span>)) &#123;</span><br><span class="line">						<span class="comment">// 执行TopicTest1的消费逻辑</span></span><br><span class="line">						<span class="keyword">if</span> (msg.getTags() != <span class="keyword">null</span> &amp;&amp; msg.getTags().equals(<span class="string">"TagA"</span>)) &#123;</span><br><span class="line">							<span class="comment">// 执行TagA的消费</span></span><br><span class="line">							System.out.println(<span class="keyword">new</span> String(msg.getBody()));</span><br><span class="line">						&#125; <span class="keyword">else</span> <span class="keyword">if</span> (msg.getTags() != <span class="keyword">null</span> &amp;&amp; msg.getTags().equals(<span class="string">"TagC"</span>)) &#123;</span><br><span class="line">							<span class="comment">// 执行TagC的消费</span></span><br><span class="line">							System.out.println(<span class="keyword">new</span> String(msg.getBody()));</span><br><span class="line">						&#125; <span class="keyword">else</span> <span class="keyword">if</span> (msg.getTags() != <span class="keyword">null</span> &amp;&amp; msg.getTags().equals(<span class="string">"TagD"</span>)) &#123;</span><br><span class="line">							<span class="comment">// 执行TagD的消费</span></span><br><span class="line">							System.out.println(<span class="keyword">new</span> String(msg.getBody()));</span><br><span class="line">						&#125;</span><br><span class="line">					&#125; <span class="keyword">else</span> <span class="keyword">if</span> (msg.getTopic().equals(<span class="string">"q_all_test"</span>)) &#123;</span><br><span class="line">						System.out.println(<span class="keyword">new</span> String(msg.getBody()));</span><br><span class="line">					&#125;</span><br><span class="line"></span><br><span class="line">					<span class="keyword">return</span> ConsumeConcurrentlyStatus.CONSUME_SUCCESS;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;);</span><br><span class="line"></span><br><span class="line">			consumer.start();</span><br><span class="line"></span><br><span class="line">			System.out.println(<span class="string">"Consumer Started."</span>);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>运行结果</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Consumer Started.</span><br><span class="line">ConsumeMessageThread_1 Receive New Messages: <span class="number">1</span></span><br><span class="line">ConsumeMessageThread_2 Receive New Messages: <span class="number">1</span></span><br><span class="line">Hello MetaQ TagA</span><br><span class="line">Hello MetaQ TagC</span><br><span class="line">ConsumeMessageThread_3 Receive New Messages: <span class="number">1</span></span><br><span class="line">Hello MetaQ All~~~</span><br></pre></td></tr></table></figure>
+
+<h3 id="控制台"><a href="#控制台" class="headerlink" title="控制台"></a>控制台</h3><p>​        RocketMQ Console是官方扩展中的控制台，可以通过控制台图形界面实现大部分命令行运维操作，包括创建topic，修改queue数量，查看producer和consumer，查看队列堆积情况，查看集群信息，查询消息，手工发送消息等实用功能。</p>
+<h4 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone git@github.com:apache/rocketmq-externals.git</span><br></pre></td></tr></table></figure>
+
+<h4 id="配置启动"><a href="#配置启动" class="headerlink" title="配置启动"></a>配置启动</h4><p>修改rocketmq-externals/rocketmq-console/src/main/resources/application.properties中端口号和Nameserver地址</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#端口号</span></span><br><span class="line"><span class="string">server.port=8727</span></span><br><span class="line"><span class="comment">#Nameserver地址</span></span><br><span class="line"><span class="string">rocketmq.config.namesrvAddr=127.0.0.1:9876;192.168.2.183:9876</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>打包</strong></p>
+<p>rocketmq-externals/rocketmq-console</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn clean -DskipTests package</span><br></pre></td></tr></table></figure>
+
+<p><strong>启动</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar target/rocketmq-console-ng-1.0.0.jar</span><br></pre></td></tr></table></figure>
+
+<p><strong>地址</strong></p>
+<p><a href="http://127.0.0.1:8727/" target="_blank" rel="noopener">http://127.0.0.1:8727</a></p>
+<h4 id="集群信息"><a href="#集群信息" class="headerlink" title="集群信息"></a>集群信息</h4><img src="mqconsole-001.png" height="auto" width="780">
+
+<h4 id="创建Topic"><a href="#创建Topic" class="headerlink" title="创建Topic"></a>创建Topic</h4><p>在实际生产环境，Topic的创建需要由运维人员提前手工创建，在集群环境，不要通过代码自动创建Topic，在创建Topic同步到各个Broker期间，如果进行消息的生产和消费，会引发后续一系列问题。</p>
+<img src="mqconsole-002.jpg" height="auto" width="780">
+
+
+
+
+
+
+
+
+        
+        <br>
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+        <li>
+            <a target="_blank" href="https://github.com/alanxiaowei">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
