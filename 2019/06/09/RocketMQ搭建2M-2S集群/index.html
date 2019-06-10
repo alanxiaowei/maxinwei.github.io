@@ -139,7 +139,7 @@
     </div>
     <div class="post-content ">
         <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>​        RocketMQ早期为阿里巴巴消息队列开源项目，后被捐赠给apache并成为其顶级开源项目被应用到很多互联网公司系统中。消息队列本质上是一种”先进先出”的数据结构，RocketMQ具有应用解耦、流量消峰、消息分发、保证最终一致性，方便动态扩容等特性。另外RocketMQ使用Java语言开发，这也降低了分析源码的门槛，方便大家更深入的排查定位问题和二次定制开发。</p>
-<h3 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h3><img src="RocketMQ-001.png" height="auto" width="780">
+<h3 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h3><img src="RocketMQ-001.png" height="auto" width="90%">
 
 <p>​        RocketMQ基于长轮序的拉取方式，这样便解决了事物消息、顺序消息和海量堆积等问题，消息队列的push和pull机制会在后续原理篇中详细说明。长连接每隔30s发送一次心跳包，如果长时间未收到心跳包Nameserver会踢掉Broker，即关闭与Broker的连接。</p>
 <h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><ul>
@@ -169,6 +169,7 @@ table th:nth-of-type(2){
     width: 360px;
 }
 </style>
+
 
 <table>
 <thead>
@@ -291,10 +292,10 @@ table th:nth-of-type(2){
 
 <p><strong>地址</strong></p>
 <p><a href="http://127.0.0.1:8727/" target="_blank" rel="noopener">http://127.0.0.1:8727</a></p>
-<h4 id="集群信息"><a href="#集群信息" class="headerlink" title="集群信息"></a>集群信息</h4><img src="mqconsole-001.png" height="auto" width="780">
+<h4 id="集群信息"><a href="#集群信息" class="headerlink" title="集群信息"></a>集群信息</h4><img src="mqconsole-001.png" height="auto" width="90%">
 
 <h4 id="创建Topic"><a href="#创建Topic" class="headerlink" title="创建Topic"></a>创建Topic</h4><p>在实际生产环境，Topic的创建需要由运维人员提前手工创建，在集群环境，不要通过代码自动创建Topic，在创建Topic同步到各个Broker期间，如果进行消息的生产和消费，会引发后续一系列问题。</p>
-<img src="mqconsole-002.jpg" height="auto" width="780">
+<img src="mqconsole-002.jpg" height="auto" width="90%">
 
 
 
