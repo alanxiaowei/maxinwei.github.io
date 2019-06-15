@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="-- 麻欣伟 -- maxinwei -- alanxiaowei@hotmail.com -- alanma">
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Nexus3.16-Maven私服搭建 - Alan Ma&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> hide one&#39;s capacities and bide one&#39;s time </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/avatar.jpg">
+        </div>
+        <div class="name">
+            <i>Alan Ma</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li>
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>HOME</span>
+                </a>
+            </li>
+            <li>
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>TAGS</span>
+                </a>
+            </li>
+            <li>
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>ARCHIVES</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>ABOUT</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>SEARCH</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#概述"><span class="toc-text">概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Nexus简介"><span class="toc-text">Nexus简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#环境信息"><span class="toc-text">环境信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基础概念"><span class="toc-text">基础概念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#仓库类型"><span class="toc-text">仓库类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#默认仓库"><span class="toc-text">默认仓库</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Nexus配置"><span class="toc-text">Nexus配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建用户"><span class="toc-text">创建用户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#下载Nexus"><span class="toc-text">下载Nexus</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修改端口"><span class="toc-text">修改端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修改Max-File"><span class="toc-text">修改Max File</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#启动Nexus"><span class="toc-text">启动Nexus</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Nexus常用命令"><span class="toc-text">Nexus常用命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#访问首页"><span class="toc-text">访问首页</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#增加代理源"><span class="toc-text">增加代理源</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#新增代理仓库"><span class="toc-text">新增代理仓库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#添加至公共组"><span class="toc-text">添加至公共组</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#maven-releases可重复发布"><span class="toc-text">maven-releases可重复发布</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Nexus升级为Https"><span class="toc-text">Nexus升级为Https</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Nexus使用"><span class="toc-text">Nexus使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Maven配置"><span class="toc-text">Maven配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#修改setting-xml"><span class="toc-text">修改setting.xml</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#项目工程配置"><span class="toc-text">项目工程配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#组件工程（mallaccount）"><span class="toc-text">组件工程（mallaccount）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#修改pom-xml"><span class="toc-text">修改pom.xml</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#部署组件"><span class="toc-text">部署组件</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Nexus浏览组件"><span class="toc-text">Nexus浏览组件</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#引用工程（malluser）"><span class="toc-text">引用工程（malluser）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#修改pom-xml-1"><span class="toc-text">修改pom.xml</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#成功引入依赖"><span class="toc-text">成功引入依赖</span></a></li></ol></li></ol></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">search</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> hide one&#39;s capacities and bide one&#39;s time </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Nexus3.16-Maven私服搭建
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">Post：<span>2019-06-15 16:14:39</span></span>
+        
+        <span class="attr">Tags：/
+        
+        <a class="tag" href="/tags/#Nexus" title="Nexus">Nexus</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+</span>
+
+    </div>
+    <div class="post-content ">
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h3 id="Nexus简介"><a href="#Nexus简介" class="headerlink" title="Nexus简介"></a>Nexus简介</h3><p>​        Nexus作为Maven的私服仓库被大家所知，主要用来管理maven工程中的依赖包，开发人员直接使用公共的Maven远程中心仓库来下载依赖包时，会遇到比如镜像不稳定导致无法成功下载依赖包，依赖包属于公司内部项目无法在中心仓库找到，开发人员众多时下载更新依赖包会严重影响办公网络速度，某些特定公司入银行核心系统员工开发计算机无法连接外网等问题。所以在日常开发中，搭建Nexus非常有必要，可以统一管理项目的依赖包，并且私服搭建在内网环境，可以保证下载更新速度。</p>
+<p>​        另外Nexus最好建立在公司内网环境，如果搭建在外网云环境，就起不到快速同步依赖包的作用了，相当于自己建了一个”远程中心仓库“，并且开发环境和生产环境要隔离开做好权限管理，同时要修改admin账户默认密码，之前见过一个小公司在公网环境部署nexus，使用默认用户密码，没有限制访问IP，而且jar包没有版本管理，都是同一个版本号，也没有进行代码混淆，这样很容易造成依赖包被替换上传至nexus从而造成严重的生产事故。</p>
+<p>​        <img src="nexus-001.png" height="auto" width="90%"></p>
+<h3 id="环境信息"><a href="#环境信息" class="headerlink" title="环境信息"></a>环境信息</h3><ul>
+<li><p>CentOS 7</p>
+</li>
+<li><p>JDK 8</p>
+</li>
+<li><p>Nexus 3.16.2</p>
+</li>
+<li><p>Maven 3.5.1</p>
+</li>
+</ul>
+<h3 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h3><h4 id="仓库类型"><a href="#仓库类型" class="headerlink" title="仓库类型"></a>仓库类型</h4><p>hosted(宿主仓库)：本地仓库，通常我们会部署自己的构件到这一类型的仓库；</p>
+<p>proxy(代理仓库)：代理仓库，它们被用来代理远程的公共仓库，如maven中央仓库；</p>
+<p>group(仓库组)：用来合并多个hosted/proxy仓库；</p>
+<p>virtual(虚拟仓库)：基本用不到，重点关注上面三个仓库的使用。</p>
+<h4 id="默认仓库"><a href="#默认仓库" class="headerlink" title="默认仓库"></a>默认仓库</h4><p>maven-central：maven中央库，默认从<a href="https://repo1.maven.org/maven2/拉取jar；" target="_blank" rel="noopener">https://repo1.maven.org/maven2/拉取jar；</a></p>
+<p>maven-releases：私库发行版jar，初次安装请将Deployment policy设置为Allow redeploy(可重复发布)；</p>
+<p>maven-snapshots：私库快照（调试版本）jar；</p>
+<p>maven-public：公共仓库，把上面三个仓库组合在一起对外提供服务，在本地maven配置settings.xml或项目pom.xml中使用。</p>
+<h2 id="Nexus配置"><a href="#Nexus配置" class="headerlink" title="Nexus配置"></a>Nexus配置</h2><h3 id="创建用户"><a href="#创建用户" class="headerlink" title="创建用户"></a>创建用户</h3><p>nexus不建议使用root用户启动，我们在此创建一个用户mxw默认分组到mxw，并切换用户</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>创建用户</span><br><span class="line">useradd -m mxw</span><br><span class="line"><span class="meta">#</span>设置密码</span><br><span class="line">password mxw</span><br><span class="line"><span class="meta">#</span>切换用户</span><br><span class="line">su mxw</span><br></pre></td></tr></table></figure>
+
+<h3 id="下载Nexus"><a href="#下载Nexus" class="headerlink" title="下载Nexus"></a>下载Nexus</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>下载压缩包</span><br><span class="line">wget https://download.sonatype.com/nexus/3/latest-unix.tar.gz</span><br><span class="line"><span class="meta">#</span>解压</span><br><span class="line">tar -zxvf latest-unix.tar.gz</span><br><span class="line"><span class="meta">#</span>建立软连接</span><br><span class="line">ln -s nexus-3.16.2-01 nexus</span><br></pre></td></tr></table></figure>
+
+<h3 id="修改端口"><a href="#修改端口" class="headerlink" title="修改端口"></a>修改端口</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>修改nexus/etc/nexus-default.properties文件</span><br><span class="line">application-port=8087</span><br></pre></td></tr></table></figure>
+
+<h3 id="修改Max-File"><a href="#修改Max-File" class="headerlink" title="修改Max File"></a>修改Max File</h3><p>nexus推荐系统最大开启文件数为65536</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>/etc/security/limits.conf</span><br><span class="line">root soft nofile 65536</span><br><span class="line">root hard nofile 65536</span><br><span class="line">* soft nofile 65536</span><br><span class="line">* hard nofile 65536</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>/etc/security/limits.d/20-nproc.conf</span><br><span class="line">*          soft    nproc     65536</span><br><span class="line">root       soft    nproc     unlimited</span><br></pre></td></tr></table></figure>
+
+<h3 id="启动Nexus"><a href="#启动Nexus" class="headerlink" title="启动Nexus"></a>启动Nexus</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd nexus/bin</span><br><span class="line">nexus start</span><br></pre></td></tr></table></figure>
+
+<h3 id="Nexus常用命令"><a href="#Nexus常用命令" class="headerlink" title="Nexus常用命令"></a>Nexus常用命令</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>查看状态</span><br><span class="line">nexus status</span><br><span class="line"><span class="meta">#</span>启动</span><br><span class="line">nexus start</span><br><span class="line"><span class="meta">#</span>关闭</span><br><span class="line">nexus stop</span><br><span class="line"><span class="meta">#</span>重启</span><br><span class="line">nexus restart</span><br></pre></td></tr></table></figure>
+
+<h3 id="访问首页"><a href="#访问首页" class="headerlink" title="访问首页"></a>访问首页</h3><p>[<a href="http://yoururl:8087]" target="_blank" rel="noopener">http://yoururl:8087]</a></p>
+<p>默认登录账号如下（首次登录后建议修改密码）。</p>
+<p>用户名：<strong><u>admin</u></strong></p>
+<p>密    码：<strong><u>admin123</u></strong></p>
+<p>​        <img src="nexus-002.png" height="auto" width="90%"></p>
+<h3 id="增加代理源"><a href="#增加代理源" class="headerlink" title="增加代理源"></a>增加代理源</h3><h4 id="新增代理仓库"><a href="#新增代理仓库" class="headerlink" title="新增代理仓库"></a>新增代理仓库</h4><p>设置—Repositories—Create repository—maven2(proxy)</p>
+<p>Name：Proxy-Aliyun</p>
+<p>Remote storage：<a href="http://maven.aliyun.com/nexus/content/groups/public" target="_blank" rel="noopener">http://maven.aliyun.com/nexus/content/groups/public</a></p>
+<p>Not found cache TTL：288000</p>
+<p>常用代理源如下表，需要按上面方法逐个添加。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>aliyun</span><br><span class="line">http://maven.aliyun.com/nexus/content/groups/public</span><br><span class="line"><span class="meta">#</span>apache_snapshot</span><br><span class="line">https://repository.apache.org/content/repositories/snapshots/</span><br><span class="line"><span class="meta">#</span>apache_release</span><br><span class="line">https://repository.apache.org/content/repositories/releases/</span><br><span class="line"><span class="meta">#</span>atlassian</span><br><span class="line">https://maven.atlassian.com/content/repositories/atlassian-public/</span><br><span class="line"><span class="meta">#</span>central.maven.org</span><br><span class="line">http://central.maven.org/maven2/</span><br><span class="line"><span class="meta">#</span>datanucleus</span><br><span class="line">http://www.datanucleus.org/downloads/maven2</span><br><span class="line"><span class="meta">#</span>maven-central </span><br><span class="line">https://repo1.maven.org/maven2/</span><br><span class="line"><span class="meta">#</span>nexus.axiomalaska.com</span><br><span class="line">http://nexus.axiomalaska.com/nexus/content/repositories/public</span><br><span class="line"><span class="meta">#</span>oss.sonatype.org</span><br><span class="line">https://oss.sonatype.org/content/repositories/snapshots</span><br><span class="line"><span class="meta">#</span>pentaho</span><br><span class="line">https://public.nexus.pentaho.org/content/groups/omni/</span><br></pre></td></tr></table></figure>
+
+<h4 id="添加至公共组"><a href="#添加至公共组" class="headerlink" title="添加至公共组"></a>添加至公共组</h4><p>将上一步建立的代理仓库添加至maven-public，并调整顺序，调低默认仓库的优先级。</p>
+<p>​        <img src="nexus-003.png" height="auto" width="90%"></p>
+<h3 id="maven-releases可重复发布"><a href="#maven-releases可重复发布" class="headerlink" title="maven-releases可重复发布"></a>maven-releases可重复发布</h3><p>将maven-releases设置为可重复发布，方便再开发中调试bug。</p>
+<p>​        <img src="nexus-004.png" height="auto" width="90%"></p>
+<h3 id="Nexus升级为Https"><a href="#Nexus升级为Https" class="headerlink" title="Nexus升级为Https"></a>Nexus升级为Https</h3><p>nexus默认使用http协议，可以在nginx配置证书，使用nginx做反向代理实现https访问nexus，，具体证书配置方法详见后续《nginx系列文章》。</p>
+<h2 id="Nexus使用"><a href="#Nexus使用" class="headerlink" title="Nexus使用"></a>Nexus使用</h2><h3 id="Maven配置"><a href="#Maven配置" class="headerlink" title="Maven配置"></a>Maven配置</h3><p>在开发期间主要发布到maven-releases和maven-shapshots两个仓库中，根据版本号后缀-SNAPSHOT或-RELEASES来区分仓库，若没有后缀则默认发布到maven-releases。url从仓库配置界面中setting—url属性复制。</p>
+<h4 id="修改setting-xml"><a href="#修改setting-xml" class="headerlink" title="修改setting.xml"></a>修改setting.xml</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--增加server配置信息--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">servers</span>&gt;</span>   </span><br><span class="line">    <span class="tag">&lt;<span class="name">server</span>&gt;</span> </span><br><span class="line">      <span class="tag">&lt;<span class="name">id</span>&gt;</span>releases<span class="tag">&lt;/<span class="name">id</span>&gt;</span>  </span><br><span class="line">      <span class="tag">&lt;<span class="name">username</span>&gt;</span>admin<span class="tag">&lt;/<span class="name">username</span>&gt;</span>  </span><br><span class="line">      <span class="tag">&lt;<span class="name">password</span>&gt;</span>admin23<span class="tag">&lt;/<span class="name">password</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;/<span class="name">server</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">server</span>&gt;</span> </span><br><span class="line">      <span class="tag">&lt;<span class="name">id</span>&gt;</span>snapshots<span class="tag">&lt;/<span class="name">id</span>&gt;</span>  </span><br><span class="line">      <span class="tag">&lt;<span class="name">username</span>&gt;</span>admin<span class="tag">&lt;/<span class="name">username</span>&gt;</span>  </span><br><span class="line">      <span class="tag">&lt;<span class="name">password</span>&gt;</span>admin123<span class="tag">&lt;/<span class="name">password</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;/<span class="name">server</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">servers</span>&gt;</span>  </span><br><span class="line"><span class="comment">&lt;!--配置私服仓库信息--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">profiles</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">profile</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span>&gt;</span>nexus<span class="tag">&lt;/<span class="name">id</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">repositories</span>&gt;</span> </span><br><span class="line">      <span class="tag">&lt;<span class="name">repository</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span>&gt;</span>nexus<span class="tag">&lt;/<span class="name">id</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>Public Repositories<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://XXXXXX:8087/repository/maven-public/<span class="tag">&lt;/<span class="name">url</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">releases</span>&gt;</span> </span><br><span class="line">          <span class="tag">&lt;<span class="name">enabled</span>&gt;</span>true<span class="tag">&lt;/<span class="name">enabled</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;/<span class="name">releases</span>&gt;</span> </span><br><span class="line">      <span class="tag">&lt;/<span class="name">repository</span>&gt;</span>  </span><br><span class="line">      <span class="tag">&lt;<span class="name">repository</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span>&gt;</span>central<span class="tag">&lt;/<span class="name">id</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>Central Repositories<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://XXXXXX:8087/repository/maven-central/<span class="tag">&lt;/<span class="name">url</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">releases</span>&gt;</span> </span><br><span class="line">          <span class="tag">&lt;<span class="name">enabled</span>&gt;</span>true<span class="tag">&lt;/<span class="name">enabled</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;/<span class="name">releases</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">snapshots</span>&gt;</span> </span><br><span class="line">          <span class="tag">&lt;<span class="name">enabled</span>&gt;</span>false<span class="tag">&lt;/<span class="name">enabled</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;/<span class="name">snapshots</span>&gt;</span> </span><br><span class="line">      <span class="tag">&lt;/<span class="name">repository</span>&gt;</span>  </span><br><span class="line">      <span class="tag">&lt;<span class="name">repository</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span>&gt;</span>release<span class="tag">&lt;/<span class="name">id</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>Release Repositories<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://XXXXXX:8087/repository/maven-releases/<span class="tag">&lt;/<span class="name">url</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">releases</span>&gt;</span> </span><br><span class="line">          <span class="tag">&lt;<span class="name">enabled</span>&gt;</span>true<span class="tag">&lt;/<span class="name">enabled</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;/<span class="name">releases</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">snapshots</span>&gt;</span> </span><br><span class="line">          <span class="tag">&lt;<span class="name">enabled</span>&gt;</span>false<span class="tag">&lt;/<span class="name">enabled</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;/<span class="name">snapshots</span>&gt;</span> </span><br><span class="line">      <span class="tag">&lt;/<span class="name">repository</span>&gt;</span>  </span><br><span class="line">      <span class="tag">&lt;<span class="name">repository</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span>&gt;</span>snapshots<span class="tag">&lt;/<span class="name">id</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>Snapshot Repositories<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://XXXXXX:8087/repository/maven-snapshots/<span class="tag">&lt;/<span class="name">url</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">releases</span>&gt;</span> </span><br><span class="line">          <span class="tag">&lt;<span class="name">enabled</span>&gt;</span>true<span class="tag">&lt;/<span class="name">enabled</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;/<span class="name">releases</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">snapshots</span>&gt;</span> </span><br><span class="line">          <span class="tag">&lt;<span class="name">enabled</span>&gt;</span>true<span class="tag">&lt;/<span class="name">enabled</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;/<span class="name">snapshots</span>&gt;</span> </span><br><span class="line">      <span class="tag">&lt;/<span class="name">repository</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;/<span class="name">repositories</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">pluginRepositories</span>&gt;</span> </span><br><span class="line">      <span class="tag">&lt;<span class="name">pluginRepository</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span>&gt;</span>plugins<span class="tag">&lt;/<span class="name">id</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>Plugin Repositories<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://XXXXXX:8087/repository/maven-public/<span class="tag">&lt;/<span class="name">url</span>&gt;</span> </span><br><span class="line">      <span class="tag">&lt;/<span class="name">pluginRepository</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;/<span class="name">pluginRepositories</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;/<span class="name">profile</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">profiles</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">activeProfiles</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">activeProfile</span>&gt;</span>nexus<span class="tag">&lt;/<span class="name">activeProfile</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">activeProfiles</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="项目工程配置"><a href="#项目工程配置" class="headerlink" title="项目工程配置"></a>项目工程配置</h3><p>新建两个测试工程malluser和mallaccount，且malluser引用mallaccount</p>
+<h4 id="组件工程（mallaccount）"><a href="#组件工程（mallaccount）" class="headerlink" title="组件工程（mallaccount）"></a>组件工程（mallaccount）</h4><h5 id="修改pom-xml"><a href="#修改pom-xml" class="headerlink" title="修改pom.xml"></a>修改pom.xml</h5><p>修改组件工程的pom.xml，id必须与maven setting.xml中server的id一致</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--jar信息--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.mxw.test.mall<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mall-account<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--下载jar私服仓库配置--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">repositories</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">repository</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span>&gt;</span>nexus<span class="tag">&lt;/<span class="name">id</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>Public Repositories<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://XXXXXX:8087/repository/maven-public/<span class="tag">&lt;/<span class="name">url</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">releases</span>&gt;</span> </span><br><span class="line">      <span class="tag">&lt;<span class="name">enabled</span>&gt;</span>true<span class="tag">&lt;/<span class="name">enabled</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;/<span class="name">releases</span>&gt;</span>  </span><br><span class="line">    <span class="comment">&lt;!--snapshots默认是关闭的,需要开启--&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">snapshots</span>&gt;</span> </span><br><span class="line">      <span class="tag">&lt;<span class="name">enabled</span>&gt;</span>true<span class="tag">&lt;/<span class="name">enabled</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;/<span class="name">snapshots</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;/<span class="name">repository</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">repositories</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--上传jar私服仓库配置--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">distributionManagement</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">repository</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span>&gt;</span>releases<span class="tag">&lt;/<span class="name">id</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>Nexus Release Repository<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://XXXXXX:8087/repository/maven-releases/<span class="tag">&lt;/<span class="name">url</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;/<span class="name">repository</span>&gt;</span>  </span><br><span class="line">  <span class="tag">&lt;<span class="name">snapshotRepository</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span>&gt;</span>snapshots<span class="tag">&lt;/<span class="name">id</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>Nexus Snapshot Repository<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://XXXXXX:8087/repository/maven-snapshots/<span class="tag">&lt;/<span class="name">url</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;/<span class="name">snapshotRepository</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">distributionManagement</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="部署组件"><a href="#部署组件" class="headerlink" title="部署组件"></a>部署组件</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> mvn deploy</span><br></pre></td></tr></table></figure>
+
+<h5 id="Nexus浏览组件"><a href="#Nexus浏览组件" class="headerlink" title="Nexus浏览组件"></a>Nexus浏览组件</h5><p>Browser—maven snapshots</p>
+<p>​        <img src="nexus-005.png" height="auto" width="90%"></p>
+<h4 id="引用工程（malluser）"><a href="#引用工程（malluser）" class="headerlink" title="引用工程（malluser）"></a>引用工程（malluser）</h4><h5 id="修改pom-xml-1"><a href="#修改pom-xml-1" class="headerlink" title="修改pom.xml"></a>修改pom.xml</h5><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--jar信息--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.mxw.test.mall<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mall-user<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--依赖jar--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.mxw.test.mall<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mall-account<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--下载jar私服仓库配置--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">repositories</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">repository</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span>&gt;</span>nexus<span class="tag">&lt;/<span class="name">id</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>Public Repositories<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://XXXXXX:8087/repository/maven-public/<span class="tag">&lt;/<span class="name">url</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">releases</span>&gt;</span> </span><br><span class="line">      <span class="tag">&lt;<span class="name">enabled</span>&gt;</span>true<span class="tag">&lt;/<span class="name">enabled</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;/<span class="name">releases</span>&gt;</span>  </span><br><span class="line">    <span class="comment">&lt;!--snapshots默认是关闭的,需要开启--&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">snapshots</span>&gt;</span> </span><br><span class="line">      <span class="tag">&lt;<span class="name">enabled</span>&gt;</span>true<span class="tag">&lt;/<span class="name">enabled</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;/<span class="name">snapshots</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;/<span class="name">repository</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">repositories</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="成功引入依赖"><a href="#成功引入依赖" class="headerlink" title="成功引入依赖"></a>成功引入依赖</h5><p>malluser已成功引入依赖工程mallaccount。</p>
+<p>​        <img src="nexus-006.png" height="auto" width="90%"></p>
+
+        
+        <br>
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+        <li>
+            <a target="_blank" href="https://github.com/alanxiaowei">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
