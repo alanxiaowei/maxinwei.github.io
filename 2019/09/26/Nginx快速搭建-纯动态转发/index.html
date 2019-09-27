@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="-- 麻欣伟 -- maxinwei -- alanxiaowei@hotmail.com -- alanma">
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Nginx快速搭建-纯动态转发 - Alan Ma&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> hide one&#39;s capacities and bide one&#39;s time </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/avatar.jpg">
+        </div>
+        <div class="name">
+            <i>Alan Ma</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li>
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>HOME</span>
+                </a>
+            </li>
+            <li>
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>TAGS</span>
+                </a>
+            </li>
+            <li>
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>ARCHIVES</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>ABOUT</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>SEARCH</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#概述"><span class="toc-text">概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Nginx官方介绍"><span class="toc-text">Nginx官方介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#正向代理与反向代理"><span class="toc-text">正向代理与反向代理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装配置"><span class="toc-text">安装配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Brew安装"><span class="toc-text">Brew安装</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#查找Nginx"><span class="toc-text">查找Nginx</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#安装Nginx"><span class="toc-text">安装Nginx</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Brew安装Nginx目录结构"><span class="toc-text">Brew安装Nginx目录结构</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#安装路径"><span class="toc-text">安装路径</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#配置文件路径"><span class="toc-text">配置文件路径</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#源码版Nginx目录结构"><span class="toc-text">源码版Nginx目录结构</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文件配置"><span class="toc-text">文件配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#配置文件结构"><span class="toc-text">配置文件结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#负载均衡配置"><span class="toc-text">负载均衡配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#重写与重定向配置"><span class="toc-text">重写与重定向配置</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#重写配置"><span class="toc-text">重写配置</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#重定向配置"><span class="toc-text">重定向配置</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#配置示例"><span class="toc-text">配置示例</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#主配置文件"><span class="toc-text">主配置文件</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#应用配置文件"><span class="toc-text">应用配置文件</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#常用命令"><span class="toc-text">常用命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#平滑重启原理"><span class="toc-text">平滑重启原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Trouble-Shooting"><span class="toc-text">Trouble Shooting</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#端口被占用"><span class="toc-text">端口被占用</span></a></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">search</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> hide one&#39;s capacities and bide one&#39;s time </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Nginx快速搭建-纯动态转发
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">Post：<span>2019-09-26 10:30:28</span></span>
+        
+        <span class="attr">Tags：/
+        
+        <a class="tag" href="/tags/#Nginx" title="Nginx">Nginx</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+</span>
+
+    </div>
+    <div class="post-content ">
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h3 id="Nginx官方介绍"><a href="#Nginx官方介绍" class="headerlink" title="Nginx官方介绍"></a>Nginx官方介绍</h3><p>​        Nginx (engine x) 是一个高性能的HTTP和反向代理web服务器，同时也提供了IMAP/POP3/SMTP服务。Nginx是由伊戈尔·赛索耶夫为俄罗斯访问量第二的Rambler.ru站点（俄文：Рамблер）开发的，第一个公开版本0.1.0发布于2004年10月4日。</p>
+<p>​        其将源代码以类BSD许可证的形式发布，因它的稳定性、丰富的功能集、示例配置文件和低系统资源的消耗而闻名。2011年6月1日，nginx 1.0.4发布。</p>
+<p>​        Nginx是一款轻量级的Web服务器/反向代理服务器及电子邮件（IMAP/POP3）代理服务器，在BSD-like 协议下发行。其特点是占有内存少，并发能力强，事实上nginx的并发能力确实在同类型的网页服务器中表现较好，中国大陆使用nginx网站用户有：百度、京东、新浪、网易、腾讯、淘宝等。</p>
+<h3 id="正向代理与反向代理"><a href="#正向代理与反向代理" class="headerlink" title="正向代理与反向代理"></a>正向代理与反向代理</h3><p>​        代理的意思相信大家都不陌生，我们日常生活中房产中介就是代理，租户向房产中介租赁房屋即可，并不需要知道房屋的真实主人是谁，房产中介对租户透明，房屋主人对租户不透明。</p>
+<p>​        正向代理即Client通过Proxy访问Server时，Proxy对Server透明，而Server并不知道真实的Client是谁，只知道请求来自Proxy，比如我们使用的科学上网代理工具就是一种正向代理工具，Client对Server不透明，有效保护了Client的信息。</p>
+<img src="nginx-003.png" height="auto" width="70%">
+
+<p>​        反向代理与正向代理正好相反，即Client通过Proxy访问Server时Proxy对Client透明，Server对Client不透明，故Client并不知道自己请求到的是哪个Server,只知道请求的是Proxy，Nginx就是一款典型的反向代理工具，可以进行负载均衡，分发请求至不同的Server。</p>
+<img src="nginx-004.png" height="auto" width="70%">
+
+<h2 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h2><h3 id="Brew安装"><a href="#Brew安装" class="headerlink" title="Brew安装"></a>Brew安装</h3><p>​        使用brew安装Nginx比较简单，brew可以帮助我们下载一些nginx依赖包，如pcre-deve(为Nginx模块如rewrite提供正则表达式库)、zlib-devel(为模块如gzip提供数据压缩函数库)、openssl-devel(为模块如ssl提供密码算法、证书以及SSL协议等功能)，还可以将可执行文件添加到环境变量中方便使用。</p>
+<h4 id="查找Nginx"><a href="#查找Nginx" class="headerlink" title="查找Nginx"></a>查找Nginx</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew search nginx</span><br></pre></td></tr></table></figure>
+
+<h4 id="安装Nginx"><a href="#安装Nginx" class="headerlink" title="安装Nginx"></a>安装Nginx</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install nginx</span><br></pre></td></tr></table></figure>
+
+<h4 id="Brew安装Nginx目录结构"><a href="#Brew安装Nginx目录结构" class="headerlink" title="Brew安装Nginx目录结构"></a>Brew安装Nginx目录结构</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nginx -V</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">nginx version: nginx/1.17.0</span><br><span class="line">built by clang 10.0.1 (clang-1001.0.46.4)</span><br><span class="line">built with OpenSSL 1.0.2r  26 Feb 2019 (running with OpenSSL 1.0.2s  28 May 2019)</span><br><span class="line">TLS SNI support enabled</span><br><span class="line">configure arguments: </span><br><span class="line">--prefix=/usr/local/Cellar/nginx/1.17.0 </span><br><span class="line">--sbin-path=/usr/local/Cellar/nginx/1.17.0/bin/nginx </span><br><span class="line">--with-cc-opt='-I/usr/local/opt/pcre/include -I/usr/local/opt/openssl/include' </span><br><span class="line">--with-ld-opt='-L/usr/local/opt/pcre/lib -L/usr/local/opt/openssl/lib' </span><br><span class="line">--conf-path=/usr/local/etc/nginx/nginx.conf </span><br><span class="line">--pid-path=/usr/local/var/run/nginx.pid </span><br><span class="line">--lock-path=/usr/local/var/run/nginx.lock </span><br><span class="line">--http-client-body-temp-path=/usr/local/var/run/nginx/client_body_temp </span><br><span class="line">--http-proxy-temp-path=/usr/local/var/run/nginx/proxy_temp </span><br><span class="line">--http-fastcgi-temp-path=/usr/local/var/run/nginx/fastcgi_temp </span><br><span class="line">--http-uwsgi-temp-path=/usr/local/var/run/nginx/uwsgi_temp </span><br><span class="line">--http-scgi-temp-path=/usr/local/var/run/nginx/scgi_temp </span><br><span class="line">--http-log-path=/usr/local/var/log/nginx/access.log </span><br><span class="line">--error-log-path=/usr/local/var/log/nginx/error.log</span><br></pre></td></tr></table></figure>
+
+<h5 id="安装路径"><a href="#安装路径" class="headerlink" title="安装路径"></a>安装路径</h5><p>从上述输出可知nginx的安装目录为/usr/local/Cellar/nginx/1.17.0</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/Cellar/nginx/<span class="number">1.17</span>.0</span><br><span class="line">  --bin目录：可执行文件；</span><br><span class="line">  --homebrew.mxcl.nginx.plist文件：mac开机启动文件；</span><br><span class="line">  --html软连接：前端工程，网站资源文件，此处为软链接实际路径为/usr/local/<span class="keyword">var</span>/www；</span><br><span class="line">  --share目录：Nginx源码压缩包和一些示例文档。</span><br></pre></td></tr></table></figure>
+
+<h5 id="配置文件路径"><a href="#配置文件路径" class="headerlink" title="配置文件路径"></a>配置文件路径</h5><p>/usr/local/etc/nginx/nginx.conf</p>
+<h5 id="源码版Nginx目录结构"><a href="#源码版Nginx目录结构" class="headerlink" title="源码版Nginx目录结构"></a>源码版Nginx目录结构</h5><p>以下是nginx编译前的目录</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/nginx-<span class="number">1.16</span>.1</span><br><span class="line">  --src目录：源代码；</span><br><span class="line">  --man目录：帮助文档；</span><br><span class="line">  --html目录：前端工程，网站资源文件；</span><br><span class="line">  --contrib目录：第三方文档；</span><br><span class="line">  --conf目录：配置文件；</span><br><span class="line">  --auto目录：脚本文件；</span><br><span class="line">  --configure文件：自动安装脚本，用于检测环境，生成编译代码需要的makefile文件。</span><br></pre></td></tr></table></figure>
+
+<h3 id="文件配置"><a href="#文件配置" class="headerlink" title="文件配置"></a>文件配置</h3><h4 id="配置文件结构"><a href="#配置文件结构" class="headerlink" title="配置文件结构"></a>配置文件结构</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">user&#123;</span><br><span class="line">	#指定用户和用户组</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br><span class="line">events&#123;</span><br><span class="line">  #控制连接相关属性</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line">http&#123;</span><br><span class="line">  #处理http请求相关配置</span><br><span class="line">  ...</span><br><span class="line">  upstream&#123;</span><br><span class="line">    #负载均衡</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">  server&#123;</span><br><span class="line">    #主机配置模块</span><br><span class="line">    ...</span><br><span class="line">    location&#123;</span><br><span class="line">      #对应目录级别控制</span><br><span class="line">      ...</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">includes&#123;</span><br><span class="line">	#引入子配置文件</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="负载均衡配置"><a href="#负载均衡配置" class="headerlink" title="负载均衡配置"></a>负载均衡配置</h4><p>upstream模块可配置负载均衡策略，主要有4种典型的配置方式，具体如下：</p>
+<ul>
+<li><p>轮序方式</p>
+<p>根据请求时间顺序，依次分发到不同server，如果其中某个server宕机可以被自动剔除；</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">upstream mxw_server&#123;</span><br><span class="line">	server 192.168.1.100;</span><br><span class="line">	server 192.168.1.101;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>权重方式</p>
+<p>weight指定权重，与访问率成正比，用于指定业务，server处理能力不均衡的场景；</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#例如10次访问请求101会被访问8次，100会被访问2次</span><br><span class="line">upstream mxw_server&#123;</span><br><span class="line">	server 192.168.1.100 weight=2;</span><br><span class="line">	server 192.168.1.101 weight=8;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ip_hash方式</p>
+<p>根据ip的hash值分发请求，可以使此ip每次访问到相同的server，可以用于session共享场景；</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">upstream mxw_server&#123;</span><br><span class="line">	ip_hash;</span><br><span class="line">	server 192.168.1.100;</span><br><span class="line">	server 192.168.1.101;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第三方模块方式</p>
+<p>如采用fair时，根据server响应的时间来分发请求，影响时间越短优先级越高；如采用url_hash时，根据url的hash值来分发请求。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">upstream mxw_server&#123;</span><br><span class="line">	server 192.168.1.100;</span><br><span class="line">	server 192.168.1.101;</span><br><span class="line">	fair;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="重写与重定向配置"><a href="#重写与重定向配置" class="headerlink" title="重写与重定向配置"></a>重写与重定向配置</h4><p>用法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rewrite regex replacement [flag];</span><br></pre></td></tr></table></figure>
+
+<p><strong>flag参数配置</strong></p>
+<ul>
+<li>last：终止rewrite,继续匹配其他规则；</li>
+<li>break：终止rewrite，不在继续匹配；</li>
+<li>redirect ：临时重定向，response code为302，搜索引擎抓取新内容同时保留就得网址；</li>
+<li>permanent：永久重定向，response code为301，搜索引擎抓取新的内容同时将旧的网址永久替换为重定向之后的网址。</li>
+</ul>
+<h5 id="重写配置"><a href="#重写配置" class="headerlink" title="重写配置"></a>重写配置</h5><p>如果url中包含api则去掉api将新的内容重写到当前请求，eg：<a href="http://www.mxw.com/api/servertime" target="_blank" rel="noopener">http://www.mxw.com/api/servertime</a> -&gt;<a href="http://www.mxw.com/servertime" target="_blank" rel="noopener">http://www.mxw.com/servertime</a> </p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">location /api/&#123;</span><br><span class="line">	rewrite  ^/api/(.*)/$1 break;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="重定向配置"><a href="#重定向配置" class="headerlink" title="重定向配置"></a>重定向配置</h5><p>将url <a href="http://www.mxw.com/img-数字.jpg重定向为" target="_blank" rel="noopener">http://www.mxw.com/img-数字.jpg重定向为</a> <a href="http://www.mxw.com/img/数字.jpg" target="_blank" rel="noopener">http://www.mxw.com/img/数字.jpg</a></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">server&#123;</span><br><span class="line">	...</span><br><span class="line">	set $name $1;</span><br><span class="line">	rewrite ^/img-([0-9]+).jpg$/img/$name.jpg permanent;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>关于上诉正则表达式的使用，会在以后的文章中针对正则进行详细说明。</p>
+<h4 id="配置示例"><a href="#配置示例" class="headerlink" title="配置示例"></a>配置示例</h4><h5 id="主配置文件"><a href="#主配置文件" class="headerlink" title="主配置文件"></a>主配置文件</h5><p>/usr/local/etc/nginx/nginx.conf</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">user  nobody;</span><br><span class="line">worker_processes  auto;</span><br><span class="line">error_log  logs/error.log;</span><br><span class="line">pid        logs/nginx.pid;</span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  65535;</span><br><span class="line">    use epoll;</span><br><span class="line">    multi_accept on;</span><br><span class="line">&#125;</span><br><span class="line">http &#123;</span><br><span class="line">    include       mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line">    log_format  main  '""  -  [] "" '</span><br><span class="line">                      '  "" '</span><br><span class="line">                      '""';</span><br><span class="line">    access_log  logs/access.log  main;</span><br><span class="line">    charset UTF-8;</span><br><span class="line">    server_tokens off;</span><br><span class="line">    open_file_cache max=100000 inactive=20s;</span><br><span class="line">    open_file_cache_valid 30s;</span><br><span class="line">    open_file_cache_min_uses 20;</span><br><span class="line">    sendfile on;</span><br><span class="line">    tcp_nopush on;</span><br><span class="line">    send_timeout 10;</span><br><span class="line">    reset_timedout_connection on;</span><br><span class="line">    client_body_timeout 10;</span><br><span class="line">    client_header_timeout 10;</span><br><span class="line">    open_file_cache_errors on;</span><br><span class="line">    client_header_buffer_size 32k;</span><br><span class="line">    proxy_connect_timeout 60;</span><br><span class="line">    proxy_read_timeout 120;</span><br><span class="line">    proxy_send_timeout 20;</span><br><span class="line">    proxy_buffer_size 32k;</span><br><span class="line">    proxy_buffers 4 128k;</span><br><span class="line">    proxy_busy_buffers_size 256k;</span><br><span class="line">    proxy_temp_file_write_size 256k;</span><br><span class="line">    proxy_cache_path /home/cache levels=1:2 keys_zone=cache_one:1024m inactive=3d max_size=2g;</span><br><span class="line">    keepalive_timeout  10;</span><br><span class="line">    gzip  on;</span><br><span class="line">    gzip_disable "msie6";</span><br><span class="line">    gzip_proxied any;</span><br><span class="line">    gzip_min_length 1000;</span><br><span class="line">    gzip_comp_level 4;</span><br><span class="line">    fastcgi_connect_timeout 300;</span><br><span class="line">    fastcgi_send_timeout 300;</span><br><span class="line">    fastcgi_read_timeout 300;</span><br><span class="line">    fastcgi_buffer_size 64k;</span><br><span class="line">    fastcgi_buffers 4 64k;</span><br><span class="line">    fastcgi_busy_buffers_size 128k;</span><br><span class="line">    fastcgi_temp_file_write_size 128k;</span><br><span class="line">    client_max_body_size 8m;</span><br><span class="line">    include /usr/local/etc/nginx/servers/*.conf;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="应用配置文件"><a href="#应用配置文件" class="headerlink" title="应用配置文件"></a>应用配置文件</h5><p> /usr/local/etc/nginx/servers/mxw.conf</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">upstream mxwmg &#123;</span><br><span class="line">  server 127.0.0.1:8080 weight=1 max_fails=2 fail_timeout=30s;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">upstream rooter &#123;</span><br><span class="line">  server 192.168.50.1 weight=1 max_fails=2 fail_timeout=30s;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">	listen	80;</span><br><span class="line">	server_name	127.0.0.1;</span><br><span class="line">  </span><br><span class="line">  location /renren-admin &#123;</span><br><span class="line">  	proxy_pass http://mxwmg;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	location / &#123;</span><br><span class="line">  	proxy_pass http://rooter;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>访问<a href="http://127.0.0.1/renren-admin/login.html" target="_blank" rel="noopener">http://127.0.0.1/renren-admin/login.html</a></p>
+<img src="nginx-001.png" height="auto" width="90%">
+
+<p>访问<a href="http://127.0.0.1/" target="_blank" rel="noopener">http://127.0.0.1/</a></p>
+<img src="nginx-002.png" height="auto" width="90%">
+
+<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>nginx</td>
+<td>启动</td>
+</tr>
+<tr>
+<td>nginx -s stop</td>
+<td>立即停止</td>
+</tr>
+<tr>
+<td>nginx -s quit</td>
+<td>优雅停止</td>
+</tr>
+<tr>
+<td>nginx -s reload</td>
+<td>平滑重启</td>
+</tr>
+<tr>
+<td>nginx -s reopen</td>
+<td>重新打开日志文件</td>
+</tr>
+<tr>
+<td>nginx -c /xxx/nginx.conf</td>
+<td>以指定配置文件启动</td>
+</tr>
+<tr>
+<td>nginx -t</td>
+<td>检测配置文件是否正确</td>
+</tr>
+<tr>
+<td>nginx -t -c /xxx/nginx.conf</td>
+<td>检测指定配置文件是否正确</td>
+</tr>
+<tr>
+<td>nginx -v</td>
+<td>显示版本信息</td>
+</tr>
+<tr>
+<td>nginx -V</td>
+<td>显示版本信息和编译选项</td>
+</tr>
+</tbody></table>
+<h3 id="平滑重启原理"><a href="#平滑重启原理" class="headerlink" title="平滑重启原理"></a>平滑重启原理</h3><p>​        Nginx采用多进程管理模式，分为主进程和工作进程，主进程管理工作进程，且主进程一直为启动状态，当接收到nginx -s reload命令时，主进程待工作进程完成工作后，再结束此工作进程，然后根据加载的新配置创建新的工作进程。由于主进程一直为有效状态，所以重启过程中不会漏掉请求，故称之为平滑重启。</p>
+<img src="nginx-005.png" height="auto" width="80%">
+
+<h2 id="Trouble-Shooting"><a href="#Trouble-Shooting" class="headerlink" title="Trouble Shooting"></a>Trouble Shooting</h2><h3 id="端口被占用"><a href="#端口被占用" class="headerlink" title="端口被占用"></a>端口被占用</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">alanma@MacBook-Pro:/usr/local/Cellar/nginx/1.17.0/share/nginx/src$ nginx</span><br><span class="line">nginx: [emerg] bind() to 0.0.0.0:80 failed (48: Address already in use)</span><br><span class="line">nginx: [emerg] bind() to 0.0.0.0:80 failed (48: Address already in use)</span><br><span class="line">nginx: [emerg] bind() to 0.0.0.0:80 failed (48: Address already in use)</span><br><span class="line">nginx: [emerg] bind() to 0.0.0.0:80 failed (48: Address already in use)</span><br><span class="line">nginx: [emerg] bind() to 0.0.0.0:80 failed (48: Address already in use)</span><br><span class="line">nginx: [emerg] still could not bind()</span><br></pre></td></tr></table></figure>
+
+<p>查看端口使用情况</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lsof -i:80</span><br></pre></td></tr></table></figure>
+
+<p>杀掉进程修改应用端口为非80</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kill -9 PID</span><br></pre></td></tr></table></figure>
+
+
+        
+        <br>
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+        <li>
+            <a target="_blank" href="https://github.com/alanxiaowei">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
